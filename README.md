@@ -6,7 +6,7 @@ This is the code repository for the paper:
 >
 > \*Equal contribution. <sup>†</sup>Project lead. <sup>#</sup>Corresponding author.
 >
-> ### [Paper]() | [HF Demo](https://huggingface.co/spaces/AIGeeksGroup/PresentAgent) | [Papers With Code]() | [HF Paper]()
+> ### [Paper]() | [Colab Demo](https://colab.research.google.com/drive/1_2buwbVY6RLoi9NdjXihCOTWoEdL70Fk?usp=sharing) | [Papers With Code]() | [HF Paper]()
 
 > [!TIP]
 > 🙋🏻‍♀️ To learn more about PresentAgent, please see the following presentation video, which was generated entirely by PresentAgent **without** any manual curation.
@@ -24,9 +24,10 @@ xxx
 
 - ✅ code release
 - ✅ api version
+- ✅ colab demo
 - ⬜️ local version
 - ⬜️ paper release
-- ⬜️ gradio demo
+- ⬜️ HF demo
 
 ## Introduction
 
