@@ -37,6 +37,9 @@ We present PresentAgent, a multimodal agent that transforms long-form documents 
 
 ## 🔧Run Your PresentAgent
 
+> [!TIP]
+> 🎮 Before deploying PresentAgent on your local machine, please check out our [**Colab demo**](https://colab.research.google.com/drive/1_2buwbVY6RLoi9NdjXihCOTWoEdL70Fk?usp=sharing), which is available online and ready to use.
+
 ### 1. Install & Requirements
 
 ```bash
