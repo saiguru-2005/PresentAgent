@@ -8,7 +8,7 @@ This is the code repository for the paper:
 >
 > ### [Paper]() | [Colab Demo](https://colab.research.google.com/drive/1_2buwbVY6RLoi9NdjXihCOTWoEdL70Fk?usp=sharing) | [Papers With Code]() | [HF Paper]()
 
-> [!TIP]
+> [!NOTE]
 > 🙋🏻‍♀️ To learn more about PresentAgent, please see the following presentation video, which was generated entirely by PresentAgent **without** any manual curation.
 
 https://github.com/user-attachments/assets/240d3ae9-61a1-4e5f-98d7-9c20a99f4c2b
