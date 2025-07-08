@@ -30,8 +30,8 @@ If you use any content of this repo for your work, please cite the following our
 - ✅ code release
 - ✅ api version
 - ✅ colab demo
+- ✅ paper release
 - ⬜️ local version
-- ⬜️ paper release
 - ⬜️ HF demo
 
 ## Introduction
