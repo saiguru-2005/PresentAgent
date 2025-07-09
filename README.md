@@ -219,3 +219,7 @@ Beyond model updates, we also invite you to explore adding new features that cou
 ## Acknowledgement
 We thank the authors of [PPTAgent](https://github.com/icip-cas/PPTAgent), [PPT Presenter](https://github.com/chaonan99/ppt_presenter), and [MegaTTS3](https://github.com/bytedance/MegaTTS3) for their open-source code.
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=AIGeeksGroup/PresentAgent&type=Date)](https://www.star-history.com/#AIGeeksGroup/PresentAgent&Date)
+
