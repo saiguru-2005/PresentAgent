@@ -49,8 +49,9 @@ We present PresentAgent, a multimodal agent that transforms long-form documents 
 ## ![YouTube](https://img.shields.io/badge/YouTube-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white) YouTube Video
 
 >[!NOTE]
-> If you’d like to learn more about our paper, be sure to check out this [youtube video](https://youtu.be/8QT3Tv07wsI) on the AI Papers Podcast Daily.
-> [![Watch the video](https://img.youtube.com/vi/8QT3Tv07wsI/maxresdefault.jpg)](https://youtu.be/8QT3Tv07wsI)
+> If you’d like to learn more about our paper, be sure to check out this [**youtube video**](https://youtu.be/8QT3Tv07wsI) on the AI Papers Podcast Daily.
+
+[![Watch the video](https://img.youtube.com/vi/8QT3Tv07wsI/maxresdefault.jpg)](https://youtu.be/8QT3Tv07wsI)
 
 
 ## 🔧Run Your PresentAgent
