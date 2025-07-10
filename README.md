@@ -25,6 +25,8 @@ If you use any content of this repo for your work, please cite the following our
 }
 ```
 
+---
+
 ## Todo List
 
 - ✅ code release
@@ -34,11 +36,22 @@ If you use any content of this repo for your work, please cite the following our
 - ⬜️ local version
 - ⬜️ HF demo
 
+---
+
 ## Introduction
 
 We present PresentAgent, a multimodal agent that transforms long-form documents into narrated presentation videos. While existing approaches are limited to generating static slides or text summaries, our method advances beyond these limitations by producing fully synchronized visual and spoken content that closely mimics human-style presentations. To achieve this integration, PresentAgent employs a modular pipeline that systematically segments the input document, plans and renders slide-style visual frames, generates contextual spoken narration with large language models and Text-to-Speech models, and seamlessly composes the final video with precise audio-visual alignment. Given the complexity of evaluating such multimodal outputs, we introduce PresentEval, a unified assessment framework powered by Vision-Language Models that comprehensively scores videos across three critical dimensions: content fidelity, visual clarity, and audience comprehension through prompt-based evaluation. Our experimental validation on a curated dataset of 30 document–presentation pairs demonstrates that PresentAgent approaches human-level quality across all evaluation metrics. These results highlight the significant potential of controllable multimodal agents in transforming static textual materials into dynamic, effective, and accessible presentation formats.
 
 ![image](presentagent/presentagent.png)
+
+---
+
+## ![YouTube](https://img.shields.io/badge/YouTube-%23FF0000.svg?style=for-the-badge&logo=YouTube&logoColor=white) YouTube Video
+
+>[!NOTE]
+> If you’d like to learn more about our paper, be sure to check out this [youtube video](https://youtu.be/8QT3Tv07wsI) on the AI Papers Podcast Daily.
+> [![Watch the video](https://img.youtube.com/vi/8QT3Tv07wsI/maxresdefault.jpg)](https://youtu.be/8QT3Tv07wsI)
+
 
 ## 🔧Run Your PresentAgent
 
@@ -214,16 +227,16 @@ For Subjective Scoring, to evaluate the quality of generated presentation videos
 <table>
   <tr>
     <td width="500" align="center" valign="top">
-      <video src="https://github.com/user-attachments/assets/400d9596-0332-434e-95bd-65f0f7ee54dd"  controls></video><br>
+      <video src="https://github.com/user-attachments/assets/400d9596-0332-434e-95bd-65f0f7ee54dd" width="500" controls></video><br>
     </td>
     <td width="500" align="center" valign="top">
-      <video src="https://github.com/user-attachments/assets/c532b8b4-24c8-4e54-a791-1a584698f188"  controls></video><br>
+      <video src="https://github.com/user-attachments/assets/c532b8b4-24c8-4e54-a791-1a584698f188" width="500" controls></video><br>
     </td>
         <td width="500" align="center" valign="top">
-      <video src="https://github.com/user-attachments/assets/4a4f5e9e-e257-4042-b324-51679c53b395"  controls></video><br>
+      <video src="https://github.com/user-attachments/assets/4a4f5e9e-e257-4042-b324-51679c53b395" width="500" controls></video><br>
     </td>
   </tr>
-
+</table>
 
 ---
 
