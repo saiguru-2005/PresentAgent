@@ -208,6 +208,23 @@ For Subjective Scoring, to evaluate the quality of generated presentation videos
 | PresentAgent |    GPT-4o-Mini    |     0.64      |       4.67        |       4.40        |
 | PresentAgent |      GPT-4o       |     0.56      |       3.93        |       4.47        |
 
+
+### 👩🏻‍💻 Case Study
+
+<table>
+  <tr>
+    <td width="500" align="center" valign="top">
+      <video src="https://github.com/user-attachments/assets/400d9596-0332-434e-95bd-65f0f7ee54dd"  controls></video><br>
+    </td>
+    <td width="500" align="center" valign="top">
+      <video src="https://github.com/user-attachments/assets/c532b8b4-24c8-4e54-a791-1a584698f188"  controls></video><br>
+    </td>
+        <td width="500" align="center" valign="top">
+      <video src="https://github.com/user-attachments/assets/4a4f5e9e-e257-4042-b324-51679c53b395"  controls></video><br>
+    </td>
+  </tr>
+
+
 ---
 
 ## ⭐ Contribute
