@@ -75,8 +75,6 @@ The pretrained checkpoint can be found at [Google Drive](https://drive.google.co
 **Requirements (for Linux)**
 
 ``` sh
-pip install -r requirements.txt
-
 # Set the root directory
 export PYTHONPATH="/path/to/MegaTTS3:$PYTHONPATH"
 
@@ -89,7 +87,6 @@ export CUDA_VISIBLE_DEVICES=0
 
 **Requirements (for Windows)**
 ``` sh
-pip install -r requirements.txt
 conda install -y -c conda-forge pynini==2.1.5
 pip install WeTextProcessing==1.0.3
 
