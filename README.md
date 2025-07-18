@@ -53,6 +53,10 @@ We present PresentAgent, a multimodal agent that transforms long-form documents 
 
 [![Watch the video](https://img.youtube.com/vi/8QT3Tv07wsI/maxresdefault.jpg)](https://youtu.be/8QT3Tv07wsI)
 
+## 💥 Promotion
+
+https://github.com/user-attachments/assets/30c76032-21a6-4f08-877a-0d30dfb576f7
+
 
 ## 🔧Run Your PresentAgent
 
