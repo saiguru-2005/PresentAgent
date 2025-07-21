@@ -25,9 +25,20 @@ If you use any content of this repo for your work, please cite the following our
 }
 ```
 
----
+## 📰 News
 
-## Todo List
+<b>2025/07/18:</b> 👉 Our paper has been promoted by <a href="https://mp.weixin.qq.com/s/lbBjnVYD8KLI5tIhjwQq0g"><b>机器之心</b></a>.
+
+<b>2025/07/16:</b> 🔔 Our paper has been promoted by <a href="https://mp.weixin.qq.com/s/IorumdA5n-KGj61Ay0u_wQ"><b>新智元</b></a>.
+
+<b>2025/07/11:</b> 📌 Our paper has been promoted by <a href="https://news.qq.com/rain/a/20250711A031XG00"><b>至顶科技</b></a>.
+
+<b>2025/07/11:</b> 👋 Our paper has been promoted by <a href="https://mp.weixin.qq.com/s/EYRU-KKbaMzXhqVkPKw7oQ"><b>量子位</b></a>.
+
+<b>2025/07/08:</b> 📣 Our paper has been promoted by <a href="https://wx.zsxq.com/mweb/views/topicdetail/topicdetail.html?topic_id=4845144825515128&group_id=142181451122&inviter_id=111855222251512&invister_sid=64b9boe9e1"><b>CVer</b></a>.
+
+
+## 📝 Todo List
 
 - ✅ code release
 - ✅ api version
