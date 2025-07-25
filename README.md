@@ -6,7 +6,7 @@ This is the code repository for the paper:
 >
 > \*Equal contribution. <sup>†</sup>Project lead. <sup>#</sup>Corresponding author.
 >
-> ### [Paper](https://arxiv.org/abs/2507.04036) | [Colab Demo](https://colab.research.google.com/drive/1_2buwbVY6RLoi9NdjXihCOTWoEdL70Fk?usp=sharing) | [Papers With Code](https://paperswithcode.com/paper/presentagent-multimodal-agent-for) | [HF Paper](https://huggingface.co/papers/2507.04036)
+> ### [Paper](https://arxiv.org/abs/2507.04036) | [Colab Demo](https://colab.research.google.com/drive/1_2buwbVY6RLoi9NdjXihCOTWoEdL70Fk?usp=sharing) | [Data](https://huggingface.co/datasets/AIGeeksGroup/Doc2Present) | [Papers With Code](https://paperswithcode.com/paper/presentagent-multimodal-agent-for) | [HF Paper](https://huggingface.co/papers/2507.04036)
 
 > [!NOTE]
 > 🙋🏻‍♀️ To learn more about PresentAgent, please see the following presentation video, which was generated entirely by PresentAgent **without** any manual curation.
