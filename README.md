@@ -44,6 +44,7 @@ If you use any content of this repo for your work, please cite the following our
 - ✅ api version
 - ✅ colab demo
 - ✅ paper release
+- ✅ data release
 - ⬜️ local version
 - ⬜️ HF demo
 
