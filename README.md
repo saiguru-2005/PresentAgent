@@ -6,6 +6,8 @@ This is the code repository for the paper:
 >
 > \*Equal contribution. <sup>†</sup>Project lead. <sup>#</sup>Corresponding author.
 >
+> ***EMNLP 2025 Demo***
+>
 > ### [Paper](https://arxiv.org/abs/2507.04036) | [Colab Demo](https://colab.research.google.com/drive/1_2buwbVY6RLoi9NdjXihCOTWoEdL70Fk?usp=sharing) | [Data](https://huggingface.co/datasets/AIGeeksGroup/Doc2Present) | [HF Paper](https://huggingface.co/papers/2507.04036)
 <!--
 [Papers With Code](https://paperswithcode.com/paper/presentagent-multimodal-agent-for) 
