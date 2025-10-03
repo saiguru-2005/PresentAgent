@@ -258,6 +258,13 @@ For Subjective Scoring, to evaluate the quality of generated presentation videos
 
 ---
 
+## Poster
+
+<img width="3456" height="4608" alt="poster" src="https://github.com/user-attachments/assets/7a68c35e-9007-4a01-8812-602b44c06030" />
+
+
+---
+
 ## ⭐ Contribute
 
 We warmly welcome you to contribute to our project by submitting pull requests—your involvement is key to keeping our work at the cutting edge! Specifically, we encourage efforts to expand its compatibility with the **latest visual-language (VL) models** and **text-to-speech (TTS) models**, ensuring the project stays aligned with the most recent advancements in these rapidly evolving fields.
