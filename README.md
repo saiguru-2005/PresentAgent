@@ -21,10 +21,11 @@ https://github.com/user-attachments/assets/240d3ae9-61a1-4e5f-98d7-9c20a99f4c2b
 
 If you use any content of this repo for your work, please cite the following our paper:
 ```
-@article{shi2025presentagent,
-  title={PresentAgent: Multimodal Agent for Presentation Video Generation},
+@inproceedings{shi2025presentagent,
+  title={Presentagent: Multimodal agent for presentation video generation},
   author={Shi, Jingwei and Zhang, Zeyu and Wu, Biao and Liang, Yanjie and Fang, Meng and Chen, Ling and Zhao, Yang},
-  journal={arXiv preprint arXiv:2507.04036},
+  booktitle={Proceedings of the 2025 Conference on Empirical Methods in Natural Language Processing: System Demonstrations},
+  pages={760--773},
   year={2025}
 }
 ```
