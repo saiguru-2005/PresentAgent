@@ -45,7 +45,11 @@ class ModelManager:
         self._marker_model = None
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        self.language_model = AsyncLLM(language_model_name, api_base)
+        self.language_model = AsyncLLM(
+            language_model_name,
+            base_url=os.environ.get("LANGUAGE_API_BASE", api_base),
+            api_key=os.environ.get("LANGUAGE_API_KEY", None)
+        )
         self.vision_model = AsyncLLM(vision_model_name, api_base)
         self.text_model = AsyncLLM(text_model_name, api_base)
 

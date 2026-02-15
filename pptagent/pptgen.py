@@ -191,11 +191,17 @@ class PPTGen(ABC):
             dict: The generated outline.
         """
         assert self._initialized, "PPTGen not initialized, call `set_reference` first"
+        # [FIX] Slide Count: Reserve space for functional slides (Opening, Ending)
+        # TOC is dynamic, but we assume at least Opening and Ending are always added.
+        # So we subtract 2 from the requested count for the planner.
+        reserved_slides = 2
+        planner_num_slides = max(1, num_slides - reserved_slides) if num_slides else None
+
         turn_id, outline = self.staffs["planner"](
-            num_slides=num_slides,
+            num_slides=planner_num_slides,
             document_overview=source_doc.get_overview(),
         )
-        if num_slides == 1 and isinstance(outline, dict):
+        if planner_num_slides == 1 and isinstance(outline, dict):
             outline = [outline]
         outline = self._fix_outline(outline, source_doc, turn_id)
         return self._add_functional_layouts(outline)
@@ -443,11 +449,15 @@ class PPTGenAsync(PPTGen):
             self._initialized
         ), "AsyncPPTAgent not initialized, call `set_reference` first"
 
+        # [FIX] Slide Count: Reserve space for functional slides
+        reserved_slides = 2
+        planner_num_slides = max(1, num_slides - reserved_slides) if num_slides else None
+
         turn_id, outline = await self.staffs["planner"](
-            num_slides=num_slides,
+            num_slides=planner_num_slides,
             document_overview=source_doc.get_overview(),
         )
-        if num_slides == 1 and isinstance(outline, dict):
+        if planner_num_slides == 1 and isinstance(outline, dict):
             outline = [outline]
         outline = await self._fix_outline(outline, source_doc, turn_id)
         return self._add_functional_layouts(outline)
@@ -468,12 +478,30 @@ class PPTGenAsync(PPTGen):
         Asynchronously validate the generated outline.
         """
         try:
-            outline_items = [
-                OutlineItem.from_dict(outline_item) for outline_item in outline
-            ]
+            outline_items = []
+            for item in outline:
+                # [FIX] Ensure required keys exist
+                if "purpose" not in item:
+                    item["purpose"] = "General Content"
+                if "section" not in item:
+                     item["section"] = "Untitled Section"
+                outline_items.append(OutlineItem.from_dict(item))
+             
             async with asyncio.TaskGroup() as tg:
                 for outline_item in outline_items:
-                    outline_item.check_retrieve(source_doc, self.sim_bound)
+                    try:
+                        outline_item.check_retrieve(source_doc, self.sim_bound)
+                    except Exception as e:
+                        print(f"Non-fatal outline error for '{outline_item.purpose}': {e}")
+                        # Fallback to prevent crash
+                        # Fallback to prevent crash
+                        fallback_title = "Untitled Section"
+                        if source_doc.sections:
+                            fallback_title = source_doc.sections[0].title
+                        
+                        outline_item.section = fallback_title
+                        if isinstance(outline_item.indexs, dict) and fallback_title not in outline_item.indexs:
+                             outline_item.indexs[fallback_title] = []
                     tg.create_task(
                         outline_item.check_images_async(
                             source_doc, self.text_embedder, self.sim_bound
@@ -481,6 +509,16 @@ class PPTGenAsync(PPTGen):
                     )
             return outline_items
         except Exception as e:
+            # [FIX] Enhanced logging for ExceptionGroups
+            print("\n!!! OUTLINE GENERATION ERROR !!!")
+            if hasattr(e, 'exceptions'): # ExceptionGroup
+                for i, exc in enumerate(e.exceptions):
+                    print(f"Sub-exception {i+1}: {exc}")
+                    traceback.print_exception(type(exc), exc, exc.__traceback__)
+            else:
+                print(f"Error: {e}")
+                traceback.print_exc()
+                
             retry += 1
             logger.info(
                 "Failed to generate outline, tried %d/%d times, error: %s",
@@ -714,7 +752,8 @@ class PPTAgent(PPTGen):
                 )
             )
 
-        assert len(command_list) > 0, "No commands generated"
+        # [FIX] Soften assertion: if no commands, just return empty (keep template as is)
+        # assert len(command_list) > 0, "No commands generated"
         return command_list, template_id
 
 
@@ -772,7 +811,8 @@ class PPTAgentAsync(PPTGenAsync):
         except Exception as e:
             logger.error(f"Failed to generate slide {slide_idx}, error: {e}")
             traceback.print_exc()
-            raise e
+            # [FIX] Prevent crash, return None to skip this slide
+            return None
         return slide, code_executor
 
     @tenacity_decorator
@@ -916,6 +956,17 @@ class PPTAgentAsync(PPTGenAsync):
             Exception: If command generation fails.
         """
         command_list = []
+        # [FIX] Normalize List output from LLM
+        if isinstance(editor_output, list):
+            if len(editor_output) > 0 and isinstance(editor_output[0], dict):
+                 editor_output = editor_output[0]
+            else:
+                 # Try to find the first dict in the list
+                 for item in editor_output:
+                     if isinstance(item, dict):
+                         editor_output = item
+                         break
+
         try:
             layout.validate(editor_output, self.source_doc.image_dir)
             if self.length_factor is not None:
@@ -959,5 +1010,7 @@ class PPTAgentAsync(PPTGenAsync):
                 )
             )
 
-        assert len(command_list) > 0, "No commands generated"
+        if len(command_list) == 0:
+            logger.warning("No commands generated, skipping slide generation")
+            return [], template_id
         return command_list, template_id

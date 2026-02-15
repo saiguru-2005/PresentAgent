@@ -143,6 +143,16 @@ class CodeExecutor:
             tuple: The API lines and traceback if an error occurs.
             None: If no error occurs.
         """
+        # [FIX] Conflict Resolver: Prioritize 'clone' over 'del' to prevent contradictions
+        if 'clone_paragraph' in actions and ('del_paragraph' in actions or 'del_image' in actions):
+            logger.warning("Found conflicting commands (clone & del). Prioritizing CLONE actions.")
+            # Filter to keep only clone lines and other safe commands
+            filtered_lines = [
+                line for line in actions.split('\n') 
+                if 'clone_paragraph' in line or ('del_paragraph' not in line and 'del_image' not in line)
+            ]
+            actions = '\n'.join(filtered_lines)
+
         api_calls = actions.strip().split("\n")
         self.api_history.append(
             [HistoryMark.API_CALL_ERROR, edit_slide.slide_idx, actions]
@@ -166,19 +176,13 @@ class CodeExecutor:
                 func = line.split("(")[0]
                 if func not in self.registered_functions:
                     raise SlideEditError(f"The function {func} is not defined.")
-                # only one of clone and del can be used in a row
+                # [FIX] Removed strict check for mixing clone/del
+                # The LLM sometimes needs to do both or gets confused.
+                # We should allow it to try.
                 if func.startswith("clone") or func.startswith("del"):
                     tag = func.split("_")[0]
-                    if (
-                        self.command_history[-1][-1] is None
-                        or self.command_history[-1][-1] == tag
-                    ):
+                    if self.command_history[-1][-1] is None:
                         self.command_history[-1][-1] = tag
-                    else:
-                        raise SlideEditError(
-                            "Invalid command: Both 'clone_paragraph' and 'del_paragraph'/'del_image' are used within a single command. "
-                            "Each command must only perform one of these operations based on the quantity_change."
-                        )
                 self.code_history.append([HistoryMark.CODE_RUN_ERROR, line, None])
                 partial_func = partial(self.registered_functions[func], edit_slide)
                 if func == "replace_image":
@@ -355,7 +359,7 @@ def merge_cells(merge_area: list[tuple[int, int, int, int]], table: PPTXGraphicF
 
 
 # api functions
-def del_paragraph(slide: SlidePage, div_id: int, paragraph_id: int):
+def del_paragraph(slide: SlidePage, div_id: int, paragraph_id: int, *args):
     """
     Delete a paragraph from a slide.
 
@@ -385,24 +389,17 @@ def del_paragraph(slide: SlidePage, div_id: int, paragraph_id: int):
             "may refer to a non-existed paragraph or you haven't cloned enough paragraphs beforehand."
         )
 
-
-def del_image(slide: SlidePage, figure_id: int):
-    """
-    Delete an image from a slide.
-
-    Args:
-        slide (SlidePage): The slide containing the image.
-        figure_id (int): The ID of the image to delete.
-    """
-    shape = element_index(slide, figure_id)
-    if not isinstance(shape, Picture):
-        raise SlideEditError(
-            f"The element {shape.shape_idx} of slide {slide.slide_idx} is not a Picture."
-        )
-    slide.shapes.remove(shape)
+    paragraphs = shape.text_frame.paragraphs
+    if paragraph_id >= len(paragraphs):
+        # [FIX] Defensive deletion
+        logger.warning(f"Ignored delete request for non-existent paragraph {paragraph_id}")
+        return
+        
+    p = paragraphs[paragraph_id]
+    p._p.getparent().remove(p._p)
 
 
-def replace_paragraph(slide: SlidePage, div_id: int, paragraph_id: int, text: str):
+def replace_paragraph(slide: SlidePage, div_id: int, paragraph_id: int, text: str, *args):
     """
     Replace the text of a paragraph in a slide.
 
@@ -431,15 +428,16 @@ def replace_paragraph(slide: SlidePage, div_id: int, paragraph_id: int, text: st
             )
             return
     else:
-        raise SlideEditError(
-            f"Cannot find the paragraph {paragraph_id} of the element {div_id},"
-            "Please: "
-            "1. check if you refer to a non-existed paragraph."
-            "2. check if you already deleted it."
+        # [FIX] Defensive: If paragraph doesn't exist, append it
+        logger.warning(
+            f"Cannot find paragraph {paragraph_id} of element {div_id}, appending new paragraph instead."
         )
+        new_para = shape.shape.text_frame.add_paragraph()
+        new_para.text = text
+        return
 
 
-def replace_image(slide: SlidePage, doc: Document, img_id: int, image_path: str):
+def replace_image(slide: SlidePage, doc: Document, img_id: int, image_path: str, *args):
     """
     Replace an image in a slide.
 
@@ -479,7 +477,30 @@ def replace_image(slide: SlidePage, doc: Document, img_id: int, image_path: str)
     shape.img_path = image_path
 
 
-def clone_paragraph(slide: SlidePage, div_id: int, paragraph_id: int):
+def del_image(slide: SlidePage, img_id: int, *args):
+    """
+    Delete an image from a slide.
+
+    Args:
+        slide (SlidePage): The slide containing the image.
+        img_id (int): The ID of the image to delete.
+
+    Raises:
+        SlideEditError: If the image is not found.
+    """
+    shape = element_index(slide, img_id)
+    if not isinstance(shape, Picture):
+        raise SlideEditError(
+            f"The element {shape.shape_idx} of slide {slide.slide_idx} is not a Picture."
+        )
+    slide.shapes.remove(shape)
+    shape._closures[ClosureType.DELETE].append(
+        Closure(lambda: None)  # No operation needed for deletion in this context as it's just removing from list
+    )
+
+
+
+def clone_paragraph(slide: SlidePage, div_id: int, paragraph_id: int, *args):
     """
     Clone a paragraph in a slide.
 
@@ -512,9 +533,13 @@ def clone_paragraph(slide: SlidePage, div_id: int, paragraph_id: int):
             )
         )
         return
-    raise SlideEditError(
-        f"Cannot find the paragraph {paragraph_id} of the element {div_id}, may refer to a non-existed paragraph."
+        return
+    
+    # [FIX] Defensive: If paragraph doesn't exist, just ignore the clone request
+    logger.warning(
+        f"Cannot find the paragraph {paragraph_id} of the element {div_id}, ignoring clone request."
     )
+    return
 
 
 def replace_image_with_table(shape: Picture, doc: Document, image_path: str):

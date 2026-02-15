@@ -59,6 +59,9 @@ class LLM:
         if history is None:
             history = []
         system, message = self.format_message(content, images, system_message)
+        if return_json:
+            client_kwargs["response_format"] = {"type": "json_object"}
+
         try:
             completion = self.client.chat.completions.create(
                 model=self.model, messages=system + history + message, **client_kwargs
@@ -277,6 +280,9 @@ class AsyncLLM(LLM):
         if history is None:
             history = []
         system, message = self.format_message(content, images, system_message)
+        if return_json:
+            client_kwargs["response_format"] = {"type": "json_object"}
+
         try:
             if self.use_batch:
                 await self.batch.add(

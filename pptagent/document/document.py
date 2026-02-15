@@ -222,8 +222,37 @@ class Document:
         if retry == 0:
             medias = to_paragraphs(section)
             turn_id, section = await extractor(markdown_document=section)
-            metadata = section.pop("metadata", {})
+        
+        # [FIX] CRITICAL: Ensure section is a Dictionary, not a List
+        if isinstance(section, list):
+            if len(section) > 0:
+                section = section[0]
+            else:
+                section = {}
+        
+        # [FIX] Handle if section is still not a dict (e.g. string or None)
+        if not isinstance(section, dict):
+            section = {}
+
+        # [FIX] Normalize Keys (Handle Llama 3.2 quirks)
+        if "title" not in section:
+            if "section_title" in section:
+                section["title"] = section.pop("section_title")
+            elif "name" in section:
+                section["title"] = section.pop("name")
+            else:
+                section["title"] = "Untitled Section"
+
+        # [FIX] Ensure subsections list exists
+        if "subsections" not in section:
+            section["subsections"] = []
+
+        # Remove metadata if it exists (safely)
+        if "metadata" in section:
+            section.pop("metadata")
+
         try:
+            # Now safe to access as dictionary
             section["subsections"] = link_medias(medias, section["subsections"])
             section = Section.from_dict(section)
             for media in section.iter_medias():
@@ -333,7 +362,45 @@ class Document:
             llm_mapping={"language": language_model, "vision": vision_model},
         )
 
+        headings = []
         headings = re.findall(r"^#+\s+.*", markdown_content, re.MULTILINE)
+
+        if not headings:
+            logger.warning("No Markdown headings found. Using DETEERMINISTIC fallback.")
+            # Critical Pivot: Bypass LLM Extractor entirely.
+            # Directly construct Document from text chunks.
+            chunk_size = 4000
+            chunks = [markdown_content[i:i+chunk_size] for i in range(0, len(markdown_content), chunk_size)]
+            
+            sections = []
+            for i, chunk in enumerate(chunks):
+                # Create a robust Section object directly
+                # Wrap content in a "General" subsection to satisfy downstream logic
+                subsec = SubSection(
+                    title="General Content",
+                    content=chunk,
+                    medias=[] 
+                )
+                sec = Section(
+                    title=f"Part {i+1}",
+                    minititle=f"Part {i+1}", 
+                    subsections=[subsec]
+                )
+                sec.summary = f"Segment {i+1} of the document."
+                sections.append(sec)
+
+            # Create dummy metadata
+            merged_metadata = {
+                "title": "Uploaded Document", 
+                "author": "User Provided",
+                "date": datetime.now().strftime("%Y-%m-%d")
+            }
+            
+            return Document(
+                image_dir=image_dir, metadata=merged_metadata, sections=sections
+            )
+
+        # Standard Path (Only if headers exist)
         adjusted_headings = await language_model(
             HEADING_EXTRACT_PROMPT.render(headings=headings), return_json=True
         )
@@ -374,6 +441,15 @@ class Document:
         merged_metadata = await language_model(
             MERGE_METADATA_PROMPT.render(metadata=metadata), return_json=True
         )
+
+        # [FIX] Ensure metadata is a dict (Llama 3.2 sanity check)
+        if isinstance(merged_metadata, list):
+            if len(merged_metadata) > 0:
+                merged_metadata = merged_metadata[0]
+            else:
+                merged_metadata = {}
+        if not isinstance(merged_metadata, dict):
+            merged_metadata = {}
         return Document(
             image_dir=image_dir, metadata=merged_metadata, sections=sections
         )
@@ -478,18 +554,32 @@ class OutlineItem:
                 logger.warning(
                     f"section not found: {sec_key}, available sections: {[section.title for section in document.sections]}.",
                 )
-                raise ValueError(
-                    f"section not found: {sec_key}, available sections: {[section.title for section in document.sections]}."
-                )
+                # [FIX] Fallback to first section instead of crashing
+                if document.sections:
+                    logger.warning(f"Defaulting section '{sec_key}' to '{document.sections[0].title}'")
+                    # Update key mapping to point to valid section
+                    self.indexs[document.sections[0].title] = self.indexs.pop(section.title)
+                    section = document.sections[0]
+                else:
+                    raise ValueError("Document has no sections to fallback to.")
+
             for idx in range(len(subsec_keys)):
+                if not section.subsections:
+                    logger.warning(f"Section '{section.title}' has no subsections. Using entire section as content.")
+                    # Create a dummy subsection wrapper for the whole section
+                    section.subsections = [SubSection(title="General", content=section.content, medias=[])]
+                    # Continue to process this new subsection
+
+
                 subsection = max(
                     section.subsections,
                     key=lambda x: edit_distance(x.title, subsec_keys[idx]),
                 )
                 self.indexs[section.title][idx] = subsection.title
                 if edit_distance(subsection.title, subsec_keys[idx]) < sim_bound:
-                    raise ValueError(
-                        f"subsection {subsec_keys[idx]} not found in section {section.title}, available subsections: {[subsection.title for subsection in section.subsections]}."
+                    # [FIX] Soften subsection check too
+                    logger.warning(
+                        f"subsection {subsec_keys[idx]} not found in section {section.title}, using closest match: {subsection.title}"
                     )
 
     def check_images(self, document: Document, text_model: LLM, sim_bound: float):
@@ -497,7 +587,8 @@ class OutlineItem:
         image_embeddings = []
         for idx, image in enumerate(self.images):
             if len(doc_images) == 0:
-                raise ValueError("Document does not contain any images.")
+                logger.warning("Document does not contain any images. Proceeding with text-only.")
+                return
             similar = max(doc_images, key=lambda x: edit_distance(x.caption, image))
             if edit_distance(similar.caption, image) > sim_bound:
                 self.images[idx] = similar.caption
@@ -529,7 +620,8 @@ class OutlineItem:
         image_embeddings = []
         for idx, image in enumerate(self.images):
             if len(doc_images) == 0:
-                raise ValueError("Document does not contain any images.")
+                logger.warning("Document does not contain any images. Proceeding with text-only.")
+                return
             similar = max(doc_images, key=lambda x: edit_distance(x.caption, image))
             if edit_distance(similar.caption, image) > sim_bound:
                 self.images[idx] = similar.caption

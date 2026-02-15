@@ -1,7 +1,7 @@
 const { defineConfig } = require('@vue/cli-service')
 
 module.exports = defineConfig({
-  transpileDependencies: true,
+  transpileDependencies: [],
   devServer: {
     proxy: {
       '/api': {
@@ -20,5 +20,8 @@ module.exports = defineConfig({
     loaderOptions: {
       postcss: { postcssOptions: { config: false } }
     }
+  },
+  chainWebpack: config => {
+    config.plugins.delete('progress');
   }
 })

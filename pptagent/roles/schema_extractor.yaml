@@ -55,6 +55,12 @@ template: |
   {{slide}}
 
   Output: Please provide the slide schema in a dict of JSON format
+  
+  ### CRITICAL INSTRUCTION ###
+    * YOU MUST RETURN ONLY VALID JSON.
+    * DO NOT RETURN PYTHON CODE OR MARKDOWN (NO ```json or ```python).
+    * DO NOT INCLUDE ANY PREAMBLE, EXPLANATION, OR CHAT.
+    * IF YOU GENERATE CODE, THE SYSTEM WILL CRASH. ONLY RETURN THE JSON OBJECT.
 
 jinja_args:
   - slide

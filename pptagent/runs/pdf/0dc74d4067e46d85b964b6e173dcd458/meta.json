@@ -1,0 +1,816 @@
+{
+    "table_of_contents": [
+        {
+            "title": "Heliyon",
+            "heading_level": null,
+            "page_id": 0,
+            "polygon": [
+                [
+                    276.9013671875,
+                    85.09912109375
+                ],
+                [
+                    329.720703125,
+                    85.09912109375
+                ],
+                [
+                    329.720703125,
+                    100.85369873046875
+                ],
+                [
+                    276.9013671875,
+                    100.85369873046875
+                ]
+            ]
+        },
+        {
+            "title": "Research article",
+            "heading_level": null,
+            "page_id": 0,
+            "polygon": [
+                [
+                    37.1226806640625,
+                    148.68115234375
+                ],
+                [
+                    110.61505126953125,
+                    148.68115234375
+                ],
+                [
+                    110.61505126953125,
+                    158.3592529296875
+                ],
+                [
+                    37.1226806640625,
+                    158.3592529296875
+                ]
+            ]
+        },
+        {
+            "title": "Ethically governing artificial intelligence in the field of scientific research\nand innovation\u2606",
+            "heading_level": null,
+            "page_id": 0,
+            "polygon": [
+                [
+                    37.58740234375,
+                    164.52545166015625
+                ],
+                [
+                    480.17578125,
+                    164.52545166015625
+                ],
+                [
+                    480.17578125,
+                    198.40081787109375
+                ],
+                [
+                    37.58740234375,
+                    198.40081787109375
+                ]
+            ]
+        },
+        {
+            "title": "Elsa Gonzalez-Esteban y Patrici Calvo *",
+            "heading_level": null,
+            "page_id": 0,
+            "polygon": [
+                [
+                    37.58740234375,
+                    209.4647216796875
+                ],
+                [
+                    219.22303771972656,
+                    209.4647216796875
+                ],
+                [
+                    219.22303771972656,
+                    222.71722412109375
+                ],
+                [
+                    37.58740234375,
+                    222.71722412109375
+                ]
+            ]
+        },
+        {
+            "title": "ARTICLE INFO",
+            "heading_level": null,
+            "page_id": 0,
+            "polygon": [
+                [
+                    37.58740234375,
+                    262.857421875
+                ],
+                [
+                    123.2451171875,
+                    262.857421875
+                ],
+                [
+                    123.2451171875,
+                    271.38671875
+                ],
+                [
+                    37.58740234375,
+                    271.38671875
+                ]
+            ]
+        },
+        {
+            "title": "ABSTRACT",
+            "heading_level": null,
+            "page_id": 0,
+            "polygon": [
+                [
+                    199.4912109375,
+                    263.43896484375
+                ],
+                [
+                    262.6416015625,
+                    263.43896484375
+                ],
+                [
+                    262.6416015625,
+                    271.96826171875
+                ],
+                [
+                    199.4912109375,
+                    271.96826171875
+                ]
+            ]
+        },
+        {
+            "title": "1. Introduction",
+            "heading_level": null,
+            "page_id": 0,
+            "polygon": [
+                [
+                    36.4678955078125,
+                    388.8583984375
+                ],
+                [
+                    97.56298828125,
+                    388.8583984375
+                ],
+                [
+                    97.56298828125,
+                    397.775390625
+                ],
+                [
+                    36.4678955078125,
+                    397.775390625
+                ]
+            ]
+        },
+        {
+            "title": "",
+            "heading_level": null,
+            "page_id": 0,
+            "polygon": [
+                [
+                    45.580322265625,
+                    89.848388671875
+                ],
+                [
+                    97.3447265625,
+                    89.848388671875
+                ],
+                [
+                    97.3447265625,
+                    99.6376953125
+                ],
+                [
+                    45.580322265625,
+                    99.6376953125
+                ]
+            ]
+        },
+        {
+            "title": "2. Scientific research and innovation in the age of AI",
+            "heading_level": null,
+            "page_id": 1,
+            "polygon": [
+                [
+                    305.275390625,
+                    242.1109619140625
+                ],
+                [
+                    510.732421875,
+                    242.1109619140625
+                ],
+                [
+                    510.732421875,
+                    251.97100830078125
+                ],
+                [
+                    305.275390625,
+                    251.97100830078125
+                ]
+            ]
+        },
+        {
+            "title": "3. The need for governance of AI",
+            "heading_level": null,
+            "page_id": 2,
+            "polygon": [
+                [
+                    304.40234375,
+                    359.005859375
+                ],
+                [
+                    433.7517395019531,
+                    359.005859375
+                ],
+                [
+                    433.7517395019531,
+                    367.1474609375
+                ],
+                [
+                    304.40234375,
+                    367.1474609375
+                ]
+            ]
+        },
+        {
+            "title": "4. Responsible research and innovation for AI: organisational\ncommitment",
+            "heading_level": null,
+            "page_id": 3,
+            "polygon": [
+                [
+                    305.56640625,
+                    641.4786376953125
+                ],
+                [
+                    543.6171875,
+                    641.4786376953125
+                ],
+                [
+                    543.6171875,
+                    659.9368133544922
+                ],
+                [
+                    305.56640625,
+                    659.9368133544922
+                ]
+            ]
+        },
+        {
+            "title": "5. Ethical governance of AI research and innovation: the ETHNA\nsystem as an organisational commitment",
+            "heading_level": null,
+            "page_id": 4,
+            "polygon": [
+                [
+                    304.984375,
+                    683.3127670288086
+                ],
+                [
+                    553.51171875,
+                    683.3127670288086
+                ],
+                [
+                    553.51171875,
+                    701.7709426879883
+                ],
+                [
+                    304.984375,
+                    701.7709426879883
+                ]
+            ]
+        },
+        {
+            "title": "E. Gonzalez-Esteban y Patrici Calvo  Heliyon 8 (2022) e08946",
+            "heading_level": null,
+            "page_id": 5,
+            "polygon": [
+                [
+                    37.03173828125,
+                    35.88604736328125
+                ],
+                [
+                    557.6593017578125,
+                    35.88604736328125
+                ],
+                [
+                    557.6593017578125,
+                    43.0848388671875
+                ],
+                [
+                    37.03173828125,
+                    43.0848388671875
+                ]
+            ]
+        },
+        {
+            "title": "Declarations",
+            "heading_level": null,
+            "page_id": 6,
+            "polygon": [
+                [
+                    306.59521484375,
+                    87.0860595703125
+                ],
+                [
+                    354.45703125,
+                    87.0860595703125
+                ],
+                [
+                    354.45703125,
+                    95.44903564453125
+                ],
+                [
+                    306.59521484375,
+                    95.44903564453125
+                ]
+            ]
+        },
+        {
+            "title": "Author contribution statement",
+            "heading_level": null,
+            "page_id": 6,
+            "polygon": [
+                [
+                    306.1484375,
+                    107.97314453124999
+                ],
+                [
+                    406.2578125,
+                    107.97314453124999
+                ],
+                [
+                    406.2578125,
+                    116.36993408203125
+                ],
+                [
+                    306.1484375,
+                    116.36993408203125
+                ]
+            ]
+        },
+        {
+            "title": "Funding statement",
+            "heading_level": null,
+            "page_id": 6,
+            "polygon": [
+                [
+                    305.857421875,
+                    185.89990234375
+                ],
+                [
+                    368.134765625,
+                    185.89990234375
+                ],
+                [
+                    368.134765625,
+                    193.98138427734375
+                ],
+                [
+                    305.857421875,
+                    193.98138427734375
+                ]
+            ]
+        },
+        {
+            "title": "Data availability statement",
+            "heading_level": null,
+            "page_id": 6,
+            "polygon": [
+                [
+                    305.275390625,
+                    294.6484375
+                ],
+                [
+                    395.490234375,
+                    294.6484375
+                ],
+                [
+                    395.490234375,
+                    303.0018005371094
+                ],
+                [
+                    305.275390625,
+                    303.0018005371094
+                ]
+            ]
+        },
+        {
+            "title": "Declaration of interests statement",
+            "heading_level": null,
+            "page_id": 6,
+            "polygon": [
+                [
+                    306.1484375,
+                    340.7841796875
+                ],
+                [
+                    416.734375,
+                    340.7841796875
+                ],
+                [
+                    416.734375,
+                    349.2066345214844
+                ],
+                [
+                    306.1484375,
+                    349.2066345214844
+                ]
+            ]
+        },
+        {
+            "title": "Additional information",
+            "heading_level": null,
+            "page_id": 6,
+            "polygon": [
+                [
+                    306.439453125,
+                    386.919921875
+                ],
+                [
+                    383.267578125,
+                    386.919921875
+                ],
+                [
+                    383.267578125,
+                    395.46807861328125
+                ],
+                [
+                    306.439453125,
+                    395.46807861328125
+                ]
+            ]
+        },
+        {
+            "title": "References",
+            "heading_level": null,
+            "page_id": 6,
+            "polygon": [
+                [
+                    305.56640625,
+                    430.34179687499994
+                ],
+                [
+                    348.63671875,
+                    430.34179687499994
+                ],
+                [
+                    348.63671875,
+                    438.3262634277344
+                ],
+                [
+                    305.56640625,
+                    438.3262634277344
+                ]
+            ]
+        },
+        {
+            "title": "E. Gonzalez-Esteban y Patrici Calvo  Heliyon 8 (2022) e08946",
+            "heading_level": null,
+            "page_id": 7,
+            "polygon": [
+                [
+                    36.44970703125,
+                    35.64373779296875
+                ],
+                [
+                    557.65478515625,
+                    35.64373779296875
+                ],
+                [
+                    557.65478515625,
+                    43.076904296875
+                ],
+                [
+                    36.44970703125,
+                    43.076904296875
+                ]
+            ]
+        }
+    ],
+    "page_stats": [
+        {
+            "page_id": 0,
+            "text_extraction_method": "pdftext",
+            "block_counts": [
+                [
+                    "Span",
+                    263
+                ],
+                [
+                    "Line",
+                    81
+                ],
+                [
+                    "Text",
+                    16
+                ],
+                [
+                    "SectionHeader",
+                    8
+                ],
+                [
+                    "Picture",
+                    2
+                ],
+                [
+                    "PageHeader",
+                    1
+                ],
+                [
+                    "Footnote",
+                    1
+                ]
+            ]
+        },
+        {
+            "page_id": 1,
+            "text_extraction_method": "pdftext",
+            "block_counts": [
+                [
+                    "Span",
+                    409
+                ],
+                [
+                    "Line",
+                    129
+                ],
+                [
+                    "Text",
+                    7
+                ],
+                [
+                    "PageHeader",
+                    2
+                ],
+                [
+                    "Footnote",
+                    1
+                ],
+                [
+                    "SectionHeader",
+                    1
+                ],
+                [
+                    "TextInlineMath",
+                    1
+                ],
+                [
+                    "PageFooter",
+                    1
+                ]
+            ]
+        },
+        {
+            "page_id": 2,
+            "text_extraction_method": "pdftext",
+            "block_counts": [
+                [
+                    "Span",
+                    422
+                ],
+                [
+                    "Line",
+                    132
+                ],
+                [
+                    "Text",
+                    9
+                ],
+                [
+                    "PageHeader",
+                    2
+                ],
+                [
+                    "SectionHeader",
+                    1
+                ],
+                [
+                    "PageFooter",
+                    1
+                ]
+            ]
+        },
+        {
+            "page_id": 3,
+            "text_extraction_method": "pdftext",
+            "block_counts": [
+                [
+                    "Span",
+                    390
+                ],
+                [
+                    "Line",
+                    129
+                ],
+                [
+                    "Text",
+                    8
+                ],
+                [
+                    "PageFooter",
+                    2
+                ],
+                [
+                    "PageHeader",
+                    1
+                ],
+                [
+                    "Footnote",
+                    1
+                ],
+                [
+                    "SectionHeader",
+                    1
+                ]
+            ]
+        },
+        {
+            "page_id": 4,
+            "text_extraction_method": "pdftext",
+            "block_counts": [
+                [
+                    "Span",
+                    325
+                ],
+                [
+                    "Line",
+                    132
+                ],
+                [
+                    "Text",
+                    15
+                ],
+                [
+                    "PageHeader",
+                    2
+                ],
+                [
+                    "SectionHeader",
+                    1
+                ],
+                [
+                    "PageFooter",
+                    1
+                ]
+            ]
+        },
+        {
+            "page_id": 5,
+            "text_extraction_method": "pdftext",
+            "block_counts": [
+                [
+                    "Span",
+                    163
+                ],
+                [
+                    "Line",
+                    72
+                ],
+                [
+                    "Text",
+                    10
+                ],
+                [
+                    "ListItem",
+                    6
+                ],
+                [
+                    "SectionHeader",
+                    1
+                ],
+                [
+                    "PageHeader",
+                    1
+                ],
+                [
+                    "Figure",
+                    1
+                ],
+                [
+                    "Caption",
+                    1
+                ],
+                [
+                    "PageFooter",
+                    1
+                ],
+                [
+                    "FigureGroup",
+                    1
+                ],
+                [
+                    "ListGroup",
+                    1
+                ]
+            ]
+        },
+        {
+            "page_id": 6,
+            "text_extraction_method": "pdftext",
+            "block_counts": [
+                [
+                    "Span",
+                    358
+                ],
+                [
+                    "Line",
+                    127
+                ],
+                [
+                    "ListItem",
+                    19
+                ],
+                [
+                    "Text",
+                    12
+                ],
+                [
+                    "SectionHeader",
+                    7
+                ],
+                [
+                    "PageHeader",
+                    2
+                ],
+                [
+                    "ListGroup",
+                    2
+                ],
+                [
+                    "PageFooter",
+                    1
+                ]
+            ]
+        },
+        {
+            "page_id": 7,
+            "text_extraction_method": "pdftext",
+            "block_counts": [
+                [
+                    "Span",
+                    679
+                ],
+                [
+                    "Line",
+                    168
+                ],
+                [
+                    "ListItem",
+                    52
+                ],
+                [
+                    "ListGroup",
+                    3
+                ],
+                [
+                    "SectionHeader",
+                    1
+                ],
+                [
+                    "PageHeader",
+                    1
+                ],
+                [
+                    "Text",
+                    1
+                ],
+                [
+                    "PageFooter",
+                    1
+                ]
+            ]
+        },
+        {
+            "page_id": 8,
+            "text_extraction_method": "pdftext",
+            "block_counts": [
+                [
+                    "Span",
+                    458
+                ],
+                [
+                    "Line",
+                    110
+                ],
+                [
+                    "ListItem",
+                    29
+                ],
+                [
+                    "PageHeader",
+                    2
+                ],
+                [
+                    "Text",
+                    2
+                ],
+                [
+                    "ListGroup",
+                    2
+                ],
+                [
+                    "PageFooter",
+                    1
+                ]
+            ]
+        }
+    ],
+    "debug_data_path": "debug_data\\source"
+}

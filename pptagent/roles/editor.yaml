@@ -1,6 +1,6 @@
 system_prompt: You are an expert Editor agent. Transform reference text and images into slide content, following schema rules and using only provided materials. Ensure the content is engaging and within the character limit. Always generate content in the same language as the reference text. You must use English.
 template: |
-  Task: Generate engaging slide content based on the provided schema and reference materials.
+  Task: Generate engaging slide content for a **SINGLE SLIDE** based on the provided schema and reference materials. Do NOT generate multiple slides.
 
   Requirements:
   1. Content Generation Rules:
@@ -22,6 +22,18 @@ template: |
             or ["/path/to/image", "..."] for image elements
     },
   }
+
+    ### SYSTEM CONSTRAINTS ###
+    1. ABSOLUTE GROUNDING: Use ONLY the provided source text.
+    2. PURGE PREVIOUS CONTEXT: DO NOT mention "Tourism", "Odissi", or "Sri Aurobindo".
+    3. NO HALLUCINATION: If details are missing, use general headings from the PDF abstract.
+
+    ### CRITICAL INSTRUCTIONS ###
+    - TASK: Extract and summarize content ONLY from the provided <CONTEXT> block.
+    - DATA SOURCE: "Presenter AI" Technical Specifications and Project Report.
+    - STRICT FORBIDDEN LIST: Do NOT mention "Sri Aurobindo", "Culture", "Tourism", or "Odissi". These are from a different project.
+    - IF DATA IS MISSING: Return {"main title": {"data": ["Content Not Found in Source"]}}. DO NOT hallucinate.
+    - YOU MUST RETURN ONLY VALID JSON.
 
   Input:
   Presentation Outline:

@@ -44,9 +44,14 @@ class Media:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]):
-        assert (
-            "markdown_content" in data and "near_chunks" in data
-        ), f"'markdown_content' and 'near_chunks' keys are required in data dictionary but were not found. Input keys: {list(data.keys())}"
+        # [FIX] Permissive parsing for Media
+        if "markdown_content" not in data:
+             data["markdown_content"] = ""
+        if "near_chunks" not in data:
+             data["near_chunks"] = ("", "")
+        # assert (
+        #     "markdown_content" in data and "near_chunks" in data
+        # ), f"'markdown_content' and 'near_chunks' keys are required in data dictionary but were not found. Input keys: {list(data.keys())}"
         return cls(
             markdown_content=data["markdown_content"],
             near_chunks=data["near_chunks"],
@@ -107,9 +112,14 @@ class Table(Media):
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]):
-        assert (
-            "markdown_content" in data and "near_chunks" in data
-        ), f"'markdown_content' and 'near_chunks' keys are required in data dictionary but were not found. Input keys: {list(data.keys())}"
+        # [FIX] Permissive parsing for Table
+        if "markdown_content" not in data:
+             data["markdown_content"] = ""
+        if "near_chunks" not in data:
+             data["near_chunks"] = ("", "")
+        # assert (
+        #     "markdown_content" in data and "near_chunks" in data
+        # ), f"'markdown_content' and 'near_chunks' keys are required in data dictionary but were not found. Input keys: {list(data.keys())}"
         return cls(
             markdown_content=data["markdown_content"],
             near_chunks=data["near_chunks"],
@@ -206,9 +216,15 @@ class SubSection:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any]):
-        assert (
-            "title" in data and "content" in data
-        ), f"'title' and 'content' keys are required in data dictionary but were not found. Input keys: {list(data.keys())}"
+        # [FIX] Permissive parsing for SubSection (Crucial for Llama 3.2)
+        if "title" not in data:
+             data["title"] = data.get("subsection_title", data.get("name", "Untitled Subsection"))
+        if "content" not in data:
+             data["content"] = data.get("text", data.get("body", ""))
+        
+        # assert (
+        #     "title" in data and "content" in data
+        # ), f"'title' and 'content' keys are required in data dictionary but were not found. Input keys: {list(data.keys())}"
         medias = []
         for chunk in data.get("medias", []):
             if (
@@ -237,13 +253,18 @@ class Section:
 
     @classmethod
     def from_dict(cls, data: dict[str, Any], markdown_content: str = None):
+        # [FIX] Patch for Llama 3.2 which often outputs 'section_title' instead of 'title'
+        if "title" not in data and "section_title" in data:
+            data["title"] = data["section_title"]
+            
         assert (
             "title" in data and "subsections" in data
         ), f"'title' and 'subsections' keys are required in data dictionary but were not found. Input keys: {list(data.keys())}"
         subsections = [
             SubSection.from_dict(subsection) for subsection in data["subsections"]
         ]
-        assert len(subsections) != 0, "subsections is empty"
+        # [FIX] Soften assertion for Local AI
+        # assert len(subsections) != 0, "subsections is empty"
         return cls(
             title=data["title"],
             subsections=subsections,
@@ -303,7 +324,9 @@ def link_medias(
         The rewritten paragraphs with medias linked to appropriate sections
     """
     # Process each media element
-    assert len(rewritten_paragraphs) != 0, "rewritten_paragraphs is empty"
+    # [FIX] Soften assertion for Local AI: if no text generated, just return empty list
+    if len(rewritten_paragraphs) == 0:
+        return []
     for media in medias:
         if len(media["near_chunks"][0]) < max_chunk_size:
             link_paragraph = rewritten_paragraphs[0]

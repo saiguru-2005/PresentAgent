@@ -1,20 +1,67 @@
 import asyncio
+print("Initializing PresentAgent Backend...")
+print("Loading libraries (this may take 10-20 seconds)...")
 import functools
 import hashlib
 import importlib
 import json
 import os
+import hashlib
+import json
+import logging
 import sys
+
+
+# ----------------------------------------------------------------------
+# ----------------------------------------------------------------------
+# LOCAL OLLAMA CONFIGURATION (User Request: No API Keys)
+# ----------------------------------------------------------------------
+os.environ["OPENAI_API_KEY"] = "ollama"  # Placeholder
+os.environ["API_BASE"] = "http://localhost:11434/v1"
+os.environ["LANGUAGE_MODEL"] = "qwen2.5:7b"
+os.environ["VISION_MODEL"] = "moondream"
+os.environ["TEXT_MODEL"] = "nomic-embed-text"
+# ----------------------------------------------------------------------
+# [FIX] Add project root to sys.path so we can import 'pptagent'
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import traceback
 import uuid
+import requests
+from bs4 import BeautifulSoup
+from pptagent.evaluation import Evaluator
 import subprocess
 import tempfile
 from contextlib import asynccontextmanager
 from copy import deepcopy
 from datetime import datetime
 from typing import Optional
+import shutil
 
-from pdf2image import convert_from_path
+def ensure_default_template():
+    target_dir = pjoin(RUNS_DIR, "pptx", "default_template")
+    target_file = pjoin(target_dir, "source.pptx")
+    
+    # Path to the template in the repo (relative to backend.py which is in /presentagent)
+    # Repo root is one level up
+    repo_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    source_file = os.path.join(repo_root, "resource", "templates", "default_template.pptx")
+    
+    if not os.path.exists(target_file):
+        try:
+            os.makedirs(target_dir, exist_ok=True)
+            if os.path.exists(source_file):
+                logger.info(f"Copying default template to {target_file}")
+                shutil.copy(source_file, target_file)
+            else:
+                 logger.error(f"Default template source not found at {source_file}")
+        except Exception as e:
+            logger.error(f"Failed to copy default template: {e}")
+
+
+
+
+# from pdf2image import convert_from_path
 from pptx import Presentation as PptxPresentation
 
 from fastapi import (
@@ -122,6 +169,7 @@ async def create_task(
         pptxFile: UploadFile = File(None),
         pdfFile: UploadFile = File(None),
         topic: str = Form(None),
+        url: str = Form(None),
         numberOfPages: int = Form(...),
 ):
     task_id = datetime.now().strftime("20%y-%m-%d") + "/" + str(uuid.uuid4())
@@ -131,6 +179,9 @@ async def create_task(
         "numberOfPages": numberOfPages,
         "pptx": "default_template",
     }
+    # Ensure default template exists if we might use it
+    ensure_default_template()
+
     if pptxFile is not None:
         pptx_blob = await pptxFile.read()
         pptx_md5 = hashlib.md5(pptx_blob).hexdigest()
@@ -149,6 +200,26 @@ async def create_task(
             os.makedirs(pdf_dir, exist_ok=True)
             with open(pjoin(pdf_dir, "source.pdf"), "wb") as f:
                 f.write(pdf_blob)
+    elif url is not None:
+        try:
+            response = requests.get(url)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            for script in soup(["script", "style"]):
+                script.extract()
+            text = soup.get_text()
+            lines = (line.strip() for line in text.splitlines())
+            chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+            text = '\\n'.join(chunk for chunk in chunks if chunk)
+            url_md5 = hashlib.md5(url.encode()).hexdigest()
+            task["pdf"] = url_md5
+            pdf_dir = pjoin(RUNS_DIR, "pdf", url_md5)
+            if not os.path.exists(pdf_dir):
+                os.makedirs(pdf_dir, exist_ok=True)
+                with open(pjoin(pdf_dir, "source.md"), "w", encoding='utf-8') as f:
+                    f.write(text)
+        except Exception as e:
+            logger.error(f"Failed to parse URL: {e}")
+            raise HTTPException(status_code=400, detail=f"Failed to fetch URL: {str(e)}")
     if topic is not None:
         task["pdf"] = topic
     progress_store[task_id] = task
@@ -269,8 +340,13 @@ async def process_ppt_to_video(task_id: str):
         await send_ppt_video_progress(task_id)
 
         pdf_path = pjoin(task_dir, "source.pdf")
+        # [MODIFIED] Use absolute path for Windows LibreOffice
+        soffice_path = r"C:\Program Files\LibreOffice\program\soffice.exe"
+        if not os.path.exists(soffice_path):
+             soffice_path = "libreoffice" # Fallback to PATH
+
         await run_cmd([
-            "libreoffice", "--headless", "--convert-to", "pdf",
+            soffice_path, "--headless", "--convert-to", "pdf",
             ppt_path, "--outdir", task_dir
         ])
 
@@ -337,7 +413,7 @@ async def generate_tts_audio(text: str, output_path: str):
         from tts.infer_cli import MegaTTS3DiTInfer
         from tts.utils.audio_utils.io import save_wav
 
-        infer = MegaTTS3DiTInfer(ckpt_root=pjoin(os.path.dirname(__file__), "MegaTTS3", "checkpoints"))
+        infer = MegaTTS3DiTInfer(ckpt_root=pjoin(os.path.dirname(__file__), "MegaTTS3", "checkpoints", "MegaTTS3"))
 
         prompt_audio_path = pjoin(os.path.dirname(__file__), "MegaTTS3", "assets", "English_prompt.wav")
 
@@ -480,7 +556,15 @@ async def ppt_gen(task_id: str, rerun=False):
             )
             labler.apply_stats(image_stats)
         else:
-            await labler.caption_images_async(models.vision_model)
+            #await labler.caption_images_async(models.vision_model)
+            try:
+                await labler.caption_images_async(models.vision_model)
+            except Exception as e:
+                print(f"Skipping image captions due to model error: {e}")
+                # [FIX] Force-add captions if they are missing so the app doesn't crash
+            for stats in labler.image_stats.values():
+                if "caption" not in stats:
+                    stats["caption"] = "Image description not available."
             json.dump(
                 labler.image_stats,
                 open(
@@ -507,7 +591,24 @@ async def ppt_gen(task_id: str, rerun=False):
         await progress.report_progress()
 
         # document refine
-        if not os.path.exists(pjoin(parsedpdf_dir, "refined_doc.json")):
+        # document refine
+        refined_doc_path = pjoin(parsedpdf_dir, "refined_doc.json")
+        source_doc = None
+        
+        if os.path.exists(refined_doc_path):
+            try:
+                # Try loading to verify integrity
+                try:
+                    loaded_data = json.load(open(refined_doc_path, encoding="utf-8"))
+                except UnicodeDecodeError:
+                    loaded_data = json.load(open(refined_doc_path)) # Fallback
+                
+                source_doc = Document.from_dict(loaded_data, parsedpdf_dir)
+            except Exception as e:
+                print(f"Warning: Failed to load existing refined_doc.json ({e}). Regenerating...")
+                source_doc = None
+
+        if source_doc is None:
             source_doc = await Document.from_markdown_async(
                 text_content,
                 models.language_model,
@@ -516,13 +617,10 @@ async def ppt_gen(task_id: str, rerun=False):
             )
             json.dump(
                 source_doc.to_dict(),
-                open(pjoin(parsedpdf_dir, "refined_doc.json"), "w"),
+                open(refined_doc_path, "w", encoding="utf-8"),
                 ensure_ascii=False,
                 indent=4,
             )
-        else:
-            source_doc = json.load(open(pjoin(parsedpdf_dir, "refined_doc.json")))
-            source_doc = Document.from_dict(source_doc, parsedpdf_dir)
         await progress.report_progress()
 
         # Slide Induction
@@ -589,8 +687,65 @@ async def ppt_gen(task_id: str, rerun=False):
         traceback.print_exc()
 
 
+@app.get("/api/evaluate/{task_id}")
+async def evaluate_task(task_id: str):
+    task_id = task_id.replace("|", "/")
+    task_dir = pjoin(RUNS_DIR, task_id)
+    if not os.path.exists(task_dir):
+        raise HTTPException(status_code=404, detail="Task not found")
+
+    try:
+        # Load Task Data
+        task = json.load(open(pjoin(task_dir, "task.json")))
+        pdf_md5 = task["pdf"]
+        pptx_md5 = task["pptx"]
+        
+        # 1. Get Source Text
+        parsedpdf_dir = pjoin(RUNS_DIR, "pdf", pdf_md5)
+        source_text_path = pjoin(parsedpdf_dir, "source.md")
+        source_text = ""
+        if os.path.exists(source_text_path):
+             source_text = open(source_text_path, encoding='utf-8').read()
+
+        # 2. Get Generated Content (Outline/Slides) - Simplified to Outline for speed
+        slide_induction_path = pjoin(RUNS_DIR, "pptx", pptx_md5, "slide_induction.json")
+        presentation_content = ""
+        if os.path.exists(slide_induction_path):
+            presentation_content = open(slide_induction_path, encoding='utf-8').read()
+
+        # 3. Get Slide Images
+        ppt_image_folder = pjoin(RUNS_DIR, "pptx", pptx_md5, "slide_images")
+        slide_images = []
+        if os.path.exists(ppt_image_folder):
+            slide_images = [pjoin(ppt_image_folder, f) for f in sorted(os.listdir(ppt_image_folder)) if f.endswith(".jpg")]
+
+        # Initialize Evaluator (using models from global scope)
+        evaluator = Evaluator(models.language_model, models.vision_model)
+
+        # Run Evaluation
+        content_score = await evaluator.evaluate_content(source_text, presentation_content)
+        visual_score = await evaluator.evaluate_visuals(slide_images)
+        quiz = await evaluator.generate_quiz(source_text)
+
+        report = {
+            "content_quality": content_score,
+            "visual_quality": visual_score,
+            "quiz": quiz
+        }
+        
+        # Save Report
+        with open(pjoin(task_dir, "evaluation.json"), "w") as f:
+            json.dump(report, f, indent=4)
+            
+        return report
+
+    except Exception as e:
+        logger.error(f"Evaluation failed: {e}")
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
     import uvicorn
 
-    ip = "0.0.0.0"
+    ip = "127.0.0.1"
     uvicorn.run(app, host=ip, port=9297)

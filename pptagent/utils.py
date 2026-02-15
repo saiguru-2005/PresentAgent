@@ -15,7 +15,7 @@ import json_repair
 import Levenshtein
 from html2image import Html2Image
 from mistune import html as markdown
-from pdf2image import convert_from_path
+import fitz  # pymupdf
 from PIL import Image as PILImage
 from pptx.dml.color import RGBColor
 from pptx.oxml import parse_xml
@@ -174,6 +174,9 @@ def edit_distance(text1: str, text2: str) -> float:
     """
     if not text1 and not text2:
         return 1.0
+    # [FIX] Ensure they are strings, as Llama 3.2 might return ints/lists
+    text1 = str(text1) if text1 is not None else ""
+    text2 = str(text2) if text2 is not None else ""
     return 1 - Levenshtein.distance(text1, text2) / max(len(text1), len(text2))
 
 
@@ -203,8 +206,20 @@ def get_json_from_response(response: str) -> dict[str, Any]:
     """
     response = response.strip()
 
+    # [FIX] Aggressive JSON Extraction
+    # Look for the first '{' and last '}' to strip any "Here is your JSON:" chat
     try:
-        return json.loads(response)
+        start = response.find('{')
+        end = response.rfind('}') + 1
+        if start != -1 and end != -1:
+             json_str = response[start:end]
+             return json.loads(json_str)
+    except Exception:
+        pass
+
+    try:
+        if response.strip().startswith("[") and response.strip().endswith("]"):
+             return json.loads(response.strip())
     except Exception:
         pass
 
@@ -310,8 +325,12 @@ def ppt_to_images(file: str, output_dir: str):
         logger.warning(f"ppt2images: {output_dir} already exists")
     os.makedirs(output_dir, exist_ok=True)
     with tempfile.TemporaryDirectory() as temp_dir:
+        soffice_path = "soffice"
+        if os.name == "nt":
+            soffice_path = r"C:\Program Files\LibreOffice\program\soffice.exe"
+
         command_list = [
-            "soffice",
+            soffice_path,
             "--headless",
             "--convert-to",
             "pdf",
@@ -330,9 +349,12 @@ def ppt_to_images(file: str, output_dir: str):
             if not f.endswith(".pdf"):
                 continue
             temp_pdf = pjoin(temp_dir, f)
-            images = convert_from_path(temp_pdf, dpi=72)
-            for i, img in enumerate(images):
-                img.save(pjoin(output_dir, f"slide_{i+1:04d}.jpg"))
+            # Use fitz (pymupdf) instead of pdf2image
+            doc = fitz.open(temp_pdf)
+            for i, page in enumerate(doc):
+                pix = page.get_pixmap(dpi=72)
+                pix.save(pjoin(output_dir, f"slide_{i+1:04d}.jpg"))
+            doc.close()
             return
 
         raise RuntimeError(
@@ -350,8 +372,12 @@ async def ppt_to_images_async(file: str, output_dir: str):
     os.makedirs(output_dir, exist_ok=True)
 
     with tempfile.TemporaryDirectory() as temp_dir:
+        soffice_path = "soffice"
+        if os.name == "nt":
+            soffice_path = r"C:\Program Files\LibreOffice\program\soffice.exe"
+            
         command_list = [
-            "soffice",
+            soffice_path,
             "--headless",
             "--convert-to",
             "pdf",
@@ -372,9 +398,13 @@ async def ppt_to_images_async(file: str, output_dir: str):
             if not f.endswith(".pdf"):
                 continue
             temp_pdf = pjoin(temp_dir, f)
-            images = convert_from_path(temp_pdf, dpi=72)
-            for i, img in enumerate(images):
-                img.save(pjoin(output_dir, f"slide_{i+1:04d}.jpg"))
+            
+            # Use fitz (pymupdf) instead of pdf2image
+            doc = fitz.open(temp_pdf)
+            for i, page in enumerate(doc):
+                pix = page.get_pixmap(dpi=72)
+                pix.save(pjoin(output_dir, f"slide_{i+1:04d}.jpg"))
+            doc.close()
             return
 
         raise RuntimeError(

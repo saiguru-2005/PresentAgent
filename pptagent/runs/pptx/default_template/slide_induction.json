@@ -1,0 +1,106 @@
+{
+    "opening": {
+        "slides": [
+            1
+        ],
+        "template_id": 1,
+        "content_schema": {}
+    },
+    "ending": {
+        "slides": [
+            14
+        ],
+        "template_id": 14,
+        "content_schema": {}
+    },
+    "The image shows an advertisement featuring a black background with green geometric shapes that create depth. Some of the green rectangles are overlaid on one another to form larger pieces of green. These smaller features rest upon top of the larger geometric shapes creating a sense of overlapping within the otherwise monochrome design.\nIn addition, there is also text included in the image written in white along with the darker elements and shapes that are mostly solid gray. Overall, it gives an impression of a digital image or poster composed of various shapes and colors.:text": {
+        "template_id": 6,
+        "slides": [
+            6,
+            13
+        ],
+        "content_schema": {}
+    },
+    "In the image where you click on a girl's pose in a black image of her dressed up for dancing and another girl is playing an instrument nearby, there are two people present with different roles. One person, likely in the background area, plays the harp while the main focus for this scene rests upon the girl in the foreground who embodies the art of dance. The girl appears to be posing and dancing elegantly on stage with her arms stretched out as if performing a dance routine or participating in an event like a ballet or musical performance, drawing attention towards herself.:image": {
+        "template_id": 11,
+        "slides": [
+            11,
+            12
+        ],
+        "content_schema": {
+            "main image": {
+                "description": "main image of the slide",
+                "type": "image",
+                "data": [
+                    "The image is a black and white photograph capturing the beauty and grace of a woman performing traditional Indian dance moves. The dancer is wearing large earrings to enhance her vibrant appearance on stage. She stands confidently as she executes her routine with outstretched arms, showcasing her impressive posture and focus during this captivating performance. As an artistically depicted character in black and white photography, the image allows us to appreciate the elegance of traditional Indian dancing while highlighting the performer's unique features and dedication to the art form."
+                ]
+            }
+        }
+    },
+    "The image depicts several identical triangles of varying sizes arranged in various directions along a long piece of paper art, creating an abstract design. The elements within the design form unique shapes and patterns while maintaining consistency throughout. The contrast between black and green colors adds to the visual impact, making the pattern visually appealing and intricate. Overall, the image presents an artistic arrangement with contrasting colors for better emphasis on individual elements or areas in the piece of paper art.:text": {
+        "template_id": 4,
+        "slides": [
+            4,
+            5
+        ],
+        "content_schema": {}
+    },
+    "The image features a banner that is primarily blue in color but includes varying shades of green at the top and bottom to create visual interest. The banner runs from top left to bottom right. It's slightly tilted to the left and covers most of the width of the frame, showcasing a unique design with multiple green triangular shapes on the sides, providing depth and texture while maintaining a cohesive color scheme throughout the object being displayed.:text": {
+        "template_id": 2,
+        "slides": [
+            2,
+            3
+        ],
+        "content_schema": {}
+    },
+    "The image displays several elephant statues placed near tall sandstone pillars that resemble rock formations. There are five elephant statues in the scene – two prominently positioned on the left side and three more scattered within the center area of the photo; one is located to the right-top corner, another is towards the top-right corner, and the third is positioned lower-left.\nThis composition and the arrangement of elephant statues around tall rocks create an interesting contrast between these two natural elements against a black background that showcases the text as well.:image": {
+        "template_id": 10,
+        "slides": [
+            10
+        ],
+        "content_schema": {
+            "main image": {
+                "description": "provides a visual representation of urns containing two elephants side by side and one standing on top surrounded by five stone pedestals (monuments) under a high stone structure in black and white",
+                "type": "image",
+                "data": [
+                    "urns containing two elephants side by side and one standing on top surrounded by five stone pedestals (monuments) under a high stone structure. [Black & White image]"
+                ]
+            }
+        }
+    },
+    "The image presents a black and white detailed map that is divided into different regions and zones. These zones include various cities such as north-east, south-west, west, central, and east. The map provides geographical context and enables users to understand the layout of these urban areas by using their addresses or locations relative to each other.\n\nApart from mapping out the precise positions of different cities, this image also includes essential information like cities that may not be directly addressed but could be found nearby within a short distance. By visually presenting all this information in one place and allowing easy access with an address, the map is effectively guiding viewers towards their desired location by clearly defining its boundaries and layout.\n\nThe presence of these labeled regions and zones makes it easier for people to navigate the map and find their way from one part of a city or region to another, either physically or mentally when using the map in their context.:image": {
+        "template_id": 7,
+        "slides": [
+            7
+        ],
+        "content_schema": {
+            "main image": {
+                "description": "background image of the slide",
+                "type": "image",
+                "data": [
+                    "`"
+                ]
+            }
+        }
+    },
+    "The image features two brown stone structures that may be an old building or temple, possibly even a museum, based on their intricate carvings and details. The architectural style suggests they could be of historical cultural significance in nature. One structure is taller than the other, creating a sense of scale in relation to each other; though both appear somewhat similar, it's important to consider that architectural features like domes or spires might impact their relative sizes in the image. Additionally, there is another, smaller temple structure visible farther away on the left side, suggesting this area may be part of a larger complex of historical and cultural importance.\nThese structures, along with each other, seem to draw one's gaze towards an area that could be a religious or historical site, providing a sense of place in the image.:image": {
+        "template_id": 8,
+        "slides": [
+            8,
+            9
+        ],
+        "content_schema": {
+            "main image": {
+                "description": "visual representation of an old temple with intricate decorations and its surroundings",
+                "type": "image",
+                "data": [
+                    "The image features an old temple with intricate decorations on its structure, situated at the center or in front of some buildings backrounds it. The temple appears to be made out of stones and is adorned with elaborate carvings showcasing a rich cultural heritage. Its location near the buildings suggests that this place could be an important place for both religious and social gatherings within this town, as well as part of its local traditions and history."
+                ]
+            }
+        }
+    },
+    "functional_keys": [
+        "opening",
+        "ending"
+    ]
+}

@@ -1,6 +1,6 @@
 <template>
   <!-- Upload form -->
-  <div class="upload-container">
+  <ElectricBorder class="upload-container" color="#7df9ff">
     <div class="upload-options">
       <!-- Row 1: Upload Buttons -->
       <div class="upload-buttons">
@@ -20,8 +20,18 @@
         </div>
       </div>
 
-      <!-- Row 2: Selectors -->
+      <!-- Row 2: URL Input (New Feature) -->
       <div class="selectors">
+         <div class="pages-selection" style="width: 80%;">
+            <input type="text" v-model="url" placeholder="OR Paste Website URL here..." class="url-input" />
+         </div>
+      </div>
+
+      <!-- Row 3: Selectors & Settings -->
+      <div class="selectors">
+        <div class="pages-selection">
+          <input type="text" v-model="topic" placeholder="Topic / Instructions (Optional)" class="topic-input" />
+        </div>
         <div class="pages-selection">
           <select v-model="selectedPages">
             <option v-for="page in pagesOptions" :key="page" :value="page">{{ page }} page</option>
@@ -35,16 +45,23 @@
         <button @click="goToPptToVideo" class="ppt-video-button">PPT2Presentation</button>
       </div>
     </div>
-  </div>
+  </ElectricBorder>
 </template>
 
 <script>
+import ElectricBorder from './ElectricBorder.vue'
+
 export default {
   name: 'UploadComponent',
+  components: {
+    ElectricBorder
+  },
   data() {
     return {
       pptxFile: null,
       pdfFile: null,
+      url: '',
+      topic: '',
       selectedPages: 6,
       pagesOptions: Array.from({ length: 12 }, (_, i) => i + 3),
       isPptxEnabled:true
@@ -71,8 +88,8 @@ export default {
           return;
         });
 
-      if (!this.pdfFile) {
-        alert('Please upload a PDF file.');
+      if (!this.pdfFile && !this.url) {
+        alert('Please upload a PDF file OR enter a URL.');
         return;
       }
 
@@ -80,7 +97,15 @@ export default {
       if (this.pptxFile) {
         formData.append('pptxFile', this.pptxFile);
       }
-      formData.append('pdfFile', this.pdfFile);
+      if (this.pdfFile) {
+        formData.append('pdfFile', this.pdfFile);
+      }
+      if (this.url) {
+        formData.append('url', this.url);
+      }
+      if (this.topic) {
+        formData.append('topic', this.topic);
+      }
       formData.append('numberOfPages', this.selectedPages);
 
       try {
@@ -111,10 +136,15 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  background-color: #f0f8ff;
+  height: auto; /* Fit content */
+  min-height: 50vh;
+  /* background-color: #f0f8ff; REMOVED to be transparent/glassy */
+  background: rgba(255, 255, 255, 0.1); /* Glassmorphism */
+  backdrop-filter: blur(10px);
   padding: 40px;
   box-sizing: border-box;
+  border-radius: 16px; /* Match ElectricBorder */
+  margin: 20px;
 }
 
 .upload-options {
@@ -122,7 +152,7 @@ export default {
   flex-direction: column;
   gap: 30px;
   width: 100%;
-  max-width: 80%;
+  max-width: 800px;
 }
 
 .upload-buttons,
@@ -135,26 +165,15 @@ export default {
 
 .upload-section,
 .pages-selection {
-  flex: 0 1 200px;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0 10px;
-}
-
-.upload-section {
-  margin-left: 3em;
-  margin-right: 3em;
-}
-
-.pages-selection {
-  margin-left: 3em;
-  margin-right: 3em;
 }
 
 .upload-label {
   position: relative;
-  background-color: #42b983;
+  background-color: rgba(66, 185, 131, 0.9); /* Slight opacity */
   color: white;
   padding: 10px 20px;
   border-radius: 5px;
@@ -167,6 +186,7 @@ export default {
   justify-content: center;
   transition: background-color 0.3s;
   font-size: 20px;
+  box-sizing: border-box;
 }
 
 .upload-label:hover {
@@ -185,6 +205,7 @@ export default {
   height: 40px;
   box-sizing: border-box;
   font-size: 16px;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .next-button {
@@ -198,6 +219,7 @@ export default {
   font-size: 20px;
   font-weight: 700;
   transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
 .next-button:hover {
@@ -216,6 +238,7 @@ export default {
   font-size: 20px;
   font-weight: 700;
   transition: background-color 0.3s, transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
 }
 
 .ppt-video-button:hover {
@@ -235,8 +258,9 @@ export default {
   right: 10px;
   top: 50%;
   transform: translateY(-50%);
-  color: green;
+  color: #fff;
   font-size: 18px;
+  text-shadow: 0 0 5px black;
 }
 
 @media (max-width: 600px) {
@@ -244,7 +268,7 @@ export default {
   .upload-buttons,
   .selectors {
     flex-direction: column;
-    gap: 35px;
+    gap: 20px;
   }
 
   .action-buttons {
@@ -258,19 +282,15 @@ export default {
   }
 }
 
-.or-divider {
-  display: flex;
-  align-items: center;
-  color: #666;
-  font-weight: bold;
-  font-size: 14px;
-  margin: 0 -10px;
-}
-
-@media (max-width: 600px) {
-  .or-divider {
-    margin: -15px 0;
-    justify-content: center;
-  }
+.url-input, .topic-input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 16px;
+  box-sizing: border-box;
+  font-family: inherit;
+  margin-top: 5px;
+  background: rgba(255, 255, 255, 0.9);
 }
 </style>

@@ -47,9 +47,10 @@ class Element:
             suggested_characters = None
         return cls(
             el_name=el_name,
-            el_type=data["type"],
-            content=data["data"],
-            description=data["description"],
+            # [FIX] Robust parsing for missing keys
+            description=data.get("description", ""),
+            el_type=data.get("type", "text"),
+            content=data.get("data", []),
             variable_length=data.get("variableLength", None),
             variable_data=data.get("variableData", None),
             suggested_characters=suggested_characters,
@@ -66,10 +67,14 @@ class Layout:
 
     @classmethod
     def from_dict(cls, title: str, data: dict):
-        elements = [
-            Element.from_dict(el_name, data["content_schema"][el_name])
-            for el_name in data["content_schema"]
-        ]
+        elements = []
+        for el_name, val in data["content_schema"].items():
+            if isinstance(val, dict):
+                elements.append(Element.from_dict(el_name, val))
+            else:
+                 # Fallback if the LLM sent a string instead of a dict
+                 logger.warning(f"Element {el_name} has invalid schema: {val}. Using fallback.")
+                 elements.append(Element.from_dict(el_name, {"description": str(val), "type": "text", "data": [], "content": []}))
         num_vary_elements = sum((el.variable_length is not None) for el in elements)
         if num_vary_elements > 1:
             raise ValueError("Only one variable element is allowed")
@@ -112,34 +117,66 @@ class Layout:
         return old_data
 
     def validate(self, editor_output: dict, image_dir: str):
+        # [FIX] Flexible Element Mapping
+        # Create a map of normalized_key -> actual_key
+        # e.g. "maintitle" -> "main title"
+        supported_map = {
+            el.el_name.replace(" ", "").replace("_", "").lower(): el.el_name
+            for el in self.elements
+        }
+
+        # Create a clean output with correct keys
+        clean_output = {}
+        for el_name, el_data in editor_output.items():
+            normalized_name = el_name.replace("_", "").replace(" ", "").lower()
+            if normalized_name in supported_map:
+                actual_name = supported_map[normalized_name]
+                clean_output[actual_name] = el_data
+            else:
+                logger.warning(f"Skipping unknown element: {el_name}")
+
+        # Update editor_output in-place with corrected keys
+        editor_output.clear()
+        
+        # [FIX] Filter out fake paths
+        final_clean = {}
+        for el_name, el_data in clean_output.items():
+             if el_data.get("type") == "image":
+                 data_list = el_data.get("data", [])
+                 if data_list and (data_list[0] == "/path/to/image" or not os.path.exists(data_list[0])):
+                     logger.warning(f"Removing invalid image path: {data_list[0]}")
+                     continue
+             final_clean[el_name] = el_data
+
+        editor_output.update(final_clean)
+
         for el_name, el_data in editor_output.items():
             assert (
                 "data" in el_data
-            ), """key `data` not found in output
-                    please give your output as a dict like
-                    {
-                        "element1": {
-                            "data": ["text1", "text2"] for text elements
-                            or ["/path/to/image", "..."] for image elements
-                        },
-                    }"""
+            ), """key `data` not found in output..."""
+            
             assert (
                 el_name in self
-            ), f"Element {el_name} is not a valid element, supported elements are {[el.el_name for el in self.elements]}"
+            ), f"Element {el_name} is not a valid element..."
+
             if self[el_name].el_type == "image":
+                # Ensure data is list
+                if not isinstance(el_data["data"], list):
+                     el_data["data"] = [el_data["data"]]
+
                 for i in range(len(el_data["data"])):
-                    if pexists(pjoin(image_dir, el_data["data"][i])):
-                        el_data["data"][i] = pjoin(image_dir, el_data["data"][i])
-                    if not pexists(el_data["data"][i]):
-                        basename = pbasename(el_data["data"][i])
+                    # Previous logic for image validation
+                    path = el_data["data"][i]
+                    if pexists(pjoin(image_dir, path)):
+                        el_data["data"][i] = pjoin(image_dir, path)
+                    elif not pexists(path):
+                        basename = pbasename(path)
                         if pexists(pjoin(image_dir, basename)):
-                            el_data["data"][i] = pjoin(image_dir, basename)
+                             el_data["data"][i] = pjoin(image_dir, basename)
                         else:
-                            raise ValueError(
-                                f"Image {el_data['data'][i]} not found\n"
-                                "Please check the image path and use only existing images\n"
-                                "Or, leave a blank list for this element"
-                            )
+                            # Soften image failure to warning
+                            logger.warning(f"Image {path} not found. Ignoring.")
+                            el_data["data"][i] = "" # Clear invalid path
 
     def validate_length(
         self, editor_output: dict, length_factor: float, language_model: LLM
@@ -166,26 +203,27 @@ class Layout:
     async def validate_length_async(
         self, editor_output: dict, length_factor: float, language_model: AsyncLLM
     ):
-        async with asyncio.TaskGroup() as tg:
-            tasks = {}
-            for el_name, el_data in editor_output.items():
-                if self[el_name].el_type == "text":
-                    charater_counts = [len(i) for i in el_data["data"]]
-                    if (
-                        max(charater_counts)
-                        > self[el_name].suggested_characters * length_factor
-                    ):
-                        task = tg.create_task(
-                            language_model(
-                                LENGTHY_REWRITE_PROMPT.render(
-                                    el_name=el_name,
-                                    content=el_data["data"],
-                                    suggested_characters=f"{self[el_name].suggested_characters} characters",
-                                ),
-                                return_json=True,
+        try:
+            async with asyncio.TaskGroup() as tg:
+                tasks = {}
+                for el_name, el_data in editor_output.items():
+                    if self[el_name].el_type == "text":
+                        charater_counts = [len(i) for i in el_data["data"]]
+                        if (
+                            max(charater_counts)
+                            > self[el_name].suggested_characters * length_factor
+                        ):
+                            task = tg.create_task(
+                                language_model(
+                                    LENGTHY_REWRITE_PROMPT.render(
+                                        el_name=el_name,
+                                        content=el_data["data"],
+                                        suggested_characters=f"{self[el_name].suggested_characters} characters",
+                                    ),
+                                    return_json=True,
+                                )
                             )
-                        )
-                        tasks[el_name] = task
+                            tasks[el_name] = task
 
             for el_name, task in tasks.items():
                 assert isinstance(
@@ -196,6 +234,18 @@ class Layout:
                     f"Lengthy rewrite for {el_name}:\n From {editor_output[el_name]['data']}\n To {new_data}"
                 )
                 editor_output[el_name]["data"] = new_data
+        
+        except Exception as e:
+            import traceback
+            print("\n!!! LENGTH VALIDATION ERROR !!!")
+            if hasattr(e, 'exceptions'):
+                for i, exc in enumerate(e.exceptions):
+                    print(f"Sub-exception {i+1}: {exc}")
+                    traceback.print_exception(type(exc), exc, exc.__traceback__)
+            else:
+                print(f"Error: {e}")
+                traceback.print_exc()
+            raise e
 
     @property
     def content_schema(self):

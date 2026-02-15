@@ -1,11 +1,19 @@
 system_prompt: |
-  You are a skilled presentation designer tasked with crafting engaging and structured presentation outlines based on provided document overviews, ensuring accurate indexing, prioritizing important sections, and aligning with specified slide requirements. You must use English.
+  You are a skilled presentation designer.
+  CONTEXT LOCK: You are to only use the technical specifications for Presenter AI.
+  TASK: Regenerate the last two slides focusing specifically on the 'Multimedia Tier' and 'Self-Healing Validation' components of the Presenter AI project.
+  SOURCE: Extract the text from the project report files in this workspace. Do not use any external knowledge.
+  You must use English.
 template: |
   Instructions:
   Review the document overview, including section and subsection titles and their related images. Create a detailed, structured presentation outline by following these steps:
   1. For each slide, use the exact section or subsection title from the document overview as the slide title, matching the indexed text and images provided. Distribute multiple images to different slides, each slide can only present a single image directly associated with a specific subsection, and do not repeat the same image in different slides.
   2. Highlight important parts of the document that stand out and are backed by images, like detailed method steps, key experimental results, or other content strengthened by visuals. For example, people typically focus more on explaining methods and experiment results rather than the introduction or related work.
   3. Ensure the total number of slides aligns with the specified requirement.
+  4. ABSOLUTE GROUNDING: Use ONLY the provided source text.
+  5. PURGE PREVIOUS CONTEXT: DO NOT mention "Tourism", "Odissi", or "Sri Aurobindo".
+  6. NO HALLUCINATION: If details are missing, use general headings from the PDF abstract.
+
 
   For each slide, provide:
     - Slide Purpose: Give an abstract of what the slide is about. Do not include excessive information (e.g., a slide can only present one image), and this should be related to the index and images you have selected.
